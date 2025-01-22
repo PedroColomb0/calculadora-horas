@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tempo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .history {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Calculadora de Tempo</h1>
+    <div>
+        <label for="hours">Horas:</label>
+        <input type="number" id="hours" placeholder="Horas" min="0">
+    </div>
+    <div>
+        <label for="minutes">Minutos:</label>
+        <input type="number" id="minutes" placeholder="Minutos" min="0" max="59">
+    </div>
+    <div>
+        <label for="seconds">Segundos:</label>
+        <input type="number" id="seconds" placeholder="Segundos" min="0" max="59">
+    </div>
+    <button onclick="addTime()">Adicionar Tempo</button>
+    
+    <div class="result">
+        <h2>Total:</h2>
+        <p id="total-time">00:00:00</p>
+        <p><strong>Quantidade de Itens Adicionados:</strong> <span id="item-count">0</span></p>
+    </div>
+    
+    <div class="history">
+        <h3>Histórico de Adições:</h3>
+        <ul id="history-list"></ul>
+    </div>
+</div>
+
+<script>
+    let totalSeconds = 0;
+    let itemCount = 0; // Contador de itens adicionados
+
+    // Função para adicionar tempo
+    function addTime() {
+        const hours = parseInt(document.getElementById('hours').value) || 0;
+        const minutes = parseInt(document.getElementById('minutes').value) || 0;
+        const seconds = parseInt(document.getElementById('seconds').value) || 0;
+
+        // Converte tudo para segundos e soma
+        totalSeconds += (hours * 3600) + (minutes * 60) + seconds;
+        itemCount++; // Incrementa o contador de itens
+
+        // Converte os segundos totais de volta para horas, minutos e segundos
+        const totalHours = Math.floor(totalSeconds / 3600);
+        const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
+        const totalSec = totalSeconds % 60;
+
+        // Atualiza o total na tela
+        document.getElementById('total-time').innerText = 
+            `${formatTime(totalHours)}:${formatTime(totalMinutes)}:${formatTime(totalSec)}`;
+
+        // Atualiza a quantidade de itens adicionados
+        document.getElementById('item-count').innerText = itemCount;
+
+        // Adiciona ao histórico
+        const historyItem = document.createElement('li');
+        historyItem.innerText = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+        document.getElementById('history-list').appendChild(historyItem);
+
+        // Limpa os campos
+        document.getElementById('hours').value = '';
+        document.getElementById('minutes').value = '';
+        document.getElementById('seconds').value = '';
+    }
+
+    // Função para formatar o tempo (ex: 01, 09, etc.)
+    function formatTime(time) {
+        return time < 10 ? '0' + time : time;
+    }
+
+    // Adiciona o evento para quando a tecla Enter for pressionada
+    document.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            addTime();  // Adiciona o tempo quando a tecla Enter for pressionada
+        }
+    });
+</script>
+
+</body>
+</html>
