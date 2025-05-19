@@ -35,6 +35,18 @@
         button:hover {
             background-color: #45a049;
         }
+        .delete-button {
+            margin-left: 10px;
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: darkred;
+        }
         .result {
             margin-top: 20px;
         }
@@ -75,50 +87,56 @@
 
 <script>
     let totalSeconds = 0;
-    let itemCount = 0; // Contador de itens adicionados
+    let itemCount = 0;
 
-    // Função para adicionar tempo
+    function formatTime(time) {
+        return time < 10 ? '0' + time : time;
+    }
+
+    function updateDisplay() {
+        const totalHours = Math.floor(totalSeconds / 3600);
+        const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
+        const totalSec = totalSeconds % 60;
+
+        document.getElementById('total-time').innerText =
+            `${formatTime(totalHours)}:${formatTime(totalMinutes)}:${formatTime(totalSec)}`;
+        document.getElementById('item-count').innerText = itemCount;
+    }
+
     function addTime() {
         const hours = parseInt(document.getElementById('hours').value) || 0;
         const minutes = parseInt(document.getElementById('minutes').value) || 0;
         const seconds = parseInt(document.getElementById('seconds').value) || 0;
 
-        // Converte tudo para segundos e soma
-        totalSeconds += (hours * 3600) + (minutes * 60) + seconds;
-        itemCount++; // Incrementa o contador de itens
+        const addedSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        totalSeconds += addedSeconds;
+        itemCount++;
 
-        // Converte os segundos totais de volta para horas, minutos e segundos
-        const totalHours = Math.floor(totalSeconds / 3600);
-        const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
-        const totalSec = totalSeconds % 60;
+        updateDisplay();
 
-        // Atualiza o total na tela
-        document.getElementById('total-time').innerText = 
-            `${formatTime(totalHours)}:${formatTime(totalMinutes)}:${formatTime(totalSec)}`;
-
-        // Atualiza a quantidade de itens adicionados
-        document.getElementById('item-count').innerText = itemCount;
-
-        // Adiciona ao histórico
         const historyItem = document.createElement('li');
-        historyItem.innerText = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+        historyItem.innerHTML = `
+            ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}
+            <button class="delete-button" onclick="removeTime(this, ${addedSeconds})">Excluir</button>
+        `;
         document.getElementById('history-list').appendChild(historyItem);
 
-        // Limpa os campos
         document.getElementById('hours').value = '';
         document.getElementById('minutes').value = '';
         document.getElementById('seconds').value = '';
     }
 
-    // Função para formatar o tempo (ex: 01, 09, etc.)
-    function formatTime(time) {
-        return time < 10 ? '0' + time : time;
+    function removeTime(button, secondsToRemove) {
+        totalSeconds -= secondsToRemove;
+        itemCount--;
+
+        button.parentElement.remove();
+        updateDisplay();
     }
 
-    // Adiciona o evento para quando a tecla Enter for pressionada
     document.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            addTime();  // Adiciona o tempo quando a tecla Enter for pressionada
+            addTime();
         }
     });
 </script>
