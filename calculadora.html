@@ -124,6 +124,9 @@
         document.getElementById('hours').value = '';
         document.getElementById('minutes').value = '';
         document.getElementById('seconds').value = '';
+
+        // 🔽 Coloca o foco de volta no campo "Minutos"
+        document.getElementById('minutes').focus();
     }
 
     function removeTime(button, secondsToRemove) {
